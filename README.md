@@ -44,6 +44,7 @@ Setup Instructions
 Clone the repository:
 
 git clone https://github.com/yourusername/exoplanet-predictor.git
+
 cd exoplanet-predictor
 
 
