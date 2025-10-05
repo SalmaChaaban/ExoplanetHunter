@@ -1,0 +1,69 @@
+{% extends 'classifier/base.html' %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+{% if latest_training %}
+<div class="card">
+    <h3>Latest Model Performance</h3>
+    <p><strong>Trained:</strong> {{ latest_training.timestamp }}</p>
+    <p><strong>Dataset:</strong> {{ latest_training.dataset_file }}</p>
+    <p><strong>Samples:</strong> {{ latest_training.n_samples }}</p>
+</div>
+
+<div class="stats">
+    <div class="stat-box">
+        <h3>{{ latest_training.accuracy|floatformat:2 }}%</h3>
+        <p>Accuracy</p>
+    </div>
+    <div class="stat-box">
+        <h3>{{ latest_training.roc_auc|floatformat:2 }}%</h3>
+        <p>ROC AUC</p>
+    </div>
+    <div class="stat-box">
+        <h3>{{ latest_training.f1_score|floatformat:2 }}%</h3>
+        <p>F1 Score</p>
+    </div>
+    <div class="stat-box">
+        <h3>{{ latest_training.training_time|floatformat:1 }}s</h3>
+        <p>Training Time</p>
+    </div>
+</div>
+{% else %}
+<div class="card">
+    <h3>No trained models yet</h3>
+    <p>Upload a dataset and train your first model!</p>
+    <a href="{% url 'train' %}"><button class="btn">Train Model</button></a>
+</div>
+{% endif %}
+
+<h3 style="margin-top: 30px;">Training History</h3>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Timestamp</th>
+            <th>Status</th>
+            <th>Accuracy</th>
+            <th>ROC AUC</th>
+            <th>Samples</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for training in all_trainings %}
+        <tr>
+            <td>{{ training.id }}</td>
+            <td>{{ training.timestamp|date:"Y-m-d H:i" }}</td>
+            <td><span class="badge {{ training.status }}">{{ training.status }}</span></td>
+            <td>{{ training.accuracy|floatformat:2 }}%</td>
+            <td>{{ training.roc_auc|floatformat:2 }}%</td>
+            <td>{{ training.n_samples }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">No training records</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

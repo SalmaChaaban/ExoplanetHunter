@@ -1,0 +1,31 @@
+{% extends 'classifier/base.html' %}
+
+{% block content %}
+<h2>Make Predictions</h2>
+
+<div class="card">
+    <h3>Upload Candidate KOIs</h3>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label>Candidates File (CSV)</label>
+            <input type="file" name="candidates_file" required accept=".csv">
+            <small>Upload CSV file containing candidate KOIs to classify</small>
+        </div>
+        
+        <button type="submit" class="btn">Predict</button>
+    </form>
+</div>
+
+<div class="card" style="margin-top: 20px;">
+    <h3>ℹ️ Requirements</h3>
+    <ul>
+        <li>CSV file must contain the same features used in training</li>
+        <li>Required columns: koi_period, koi_duration, koi_depth, koi_prad, etc.</li>
+        <li>Missing values will be automatically imputed</li>
+        <li>Results will show confidence scores for each prediction</li>
+    </ul>
+</div>
+{% endblock %}

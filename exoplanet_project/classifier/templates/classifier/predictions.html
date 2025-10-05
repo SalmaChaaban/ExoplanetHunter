@@ -1,0 +1,52 @@
+{% extends 'classifier/base.html' %}
+
+{% block content %}
+<h2>Predictions</h2>
+
+{% if latest_training %}
+<div class="card">
+    <h3>Using Model ID: {{ latest_training.id }}</h3>
+    <p><strong>Trained:</strong> {{ latest_training.timestamp|date:"Y-m-d H:i" }}</p>
+    <p><strong>Model Accuracy:</strong> {{ latest_training.accuracy|floatformat:2 }}%</p>
+    <p><strong>ROC AUC:</strong> {{ latest_training.roc_auc|floatformat:2 }}%</p>
+</div>
+
+<h3 style="margin-top: 30px;">Top Predictions (by Confidence)</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>KOI ID</th>
+            <th>Predicted Class</th>
+            <th>Confidence</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pred in predictions %}
+        <tr>
+            <td>{{ pred.koi_id }}</td>
+            <td>
+                <span class="badge {% if pred.predicted_class == 'CONFIRMED' %}confirmed{% else %}false-positive{% endif %}">
+                    {{ pred.predicted_class }}
+                </span>
+            </td>
+            <td>{{ pred.confidence|floatformat:2 }}%</td>
+            <td>{{ pred.timestamp|date:"Y-m-d H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No predictions yet. Upload a candidates file to make predictions.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+<div class="card">
+    <h3>No trained model available</h3>
+    <p>Train a model first before making predictions.</p>
+    <a href="{% url 'train' %}"><button class="btn">Train Model</button></a>
+</div>
+{% endif %}
+{% endblock %}

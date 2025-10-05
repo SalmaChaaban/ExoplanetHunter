@@ -1,0 +1,57 @@
+{% extends 'classifier/base.html' %}
+
+{% block content %}
+<h2>Model Comparison</h2>
+
+<div class="card">
+    <h3>Compare Different Training Runs</h3>
+    <p>Analyze how different hyperparameters affect model performance</p>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>RF Est.</th>
+            <th>GB Est.</th>
+            <th>GB LR</th>
+            <th>Test Size</th>
+            <th>Accuracy</th>
+            <th>F1 Score</th>
+            <th>ROC AUC</th>
+            <th>Time (s)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for training in trainings %}
+        <tr>
+            <td>{{ training.id }}</td>
+            <td>{{ training.timestamp|date:"m/d H:i" }}</td>
+            <td>{{ training.rf_n_estimators }}</td>
+            <td>{{ training.gb_n_estimators }}</td>
+            <td>{{ training.gb_learning_rate }}</td>
+            <td>{{ training.test_size }}</td>
+            <td>{{ training.accuracy|floatformat:2 }}%</td>
+            <td>{{ training.f1_score|floatformat:2 }}%</td>
+            <td>{{ training.roc_auc|floatformat:2 }}%</td>
+            <td>{{ training.training_time|floatformat:1 }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="10">No completed training runs to compare</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="card" style="margin-top: 20px;">
+    <h3>📊 Insights</h3>
+    <ul>
+        <li>Higher estimators generally improve accuracy but increase training time</li>
+        <li>ROC AUC above 0.95 indicates excellent model performance</li>
+        <li>Compare models with similar test sizes for fair comparison</li>
+        <li>F1 Score balances precision and recall - important for imbalanced data</li>
+    </ul>
+</div>
+{% endblock %}
